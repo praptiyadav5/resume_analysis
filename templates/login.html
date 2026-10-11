@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Login — CareerLens AI{% endblock %}
+
+{% block head %}
+<style>
+  .auth-wrap {
+    min-height: calc(100vh - 64px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem 1rem;
+  }
+  .auth-card {
+    width: 100%; max-width: 420px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2.5rem;
+  }
+  .auth-logo {
+    text-align: center; margin-bottom: 2rem;
+  }
+  .auth-logo h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 2rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.3rem;
+  }
+  .auth-logo p { color: var(--muted); font-size: 0.9rem; }
+  .auth-footer { text-align: center; margin-top: 1.5rem; color: var(--muted); font-size: 0.88rem; }
+  .auth-footer a { color: var(--accent); text-decoration: none; }
+  .auth-footer a:hover { text-decoration: underline; }
+  .auth-divider {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 1.5rem 0; color: var(--muted); font-size: 0.8rem;
+  }
+  .auth-divider::before, .auth-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--glass-border);
+  }
+  .submit-btn {
+    width: 100%; justify-content: center; padding: 0.8rem;
+    font-size: 0.95rem; font-weight: 600; margin-top: 0.5rem;
+    position: relative; overflow: hidden;
+  }
+  .submit-btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.08), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+  .submit-btn:hover::after { transform: translateX(100%); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card fade-up">
+    <div class="auth-logo">
+      <h1>⬡ CareerLens</h1>
+      <p>AI-powered resume intelligence</p>
+    </div>
+
+    {% if error %}
+      <div class="flash flash-error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/login" id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-input" placeholder="you@example.com" required autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div style="position:relative">
+          <input type="password" name="password" id="pwdInput" class="form-input" placeholder="••••••••" required autocomplete="current-password" />
+          <button type="button" onclick="togglePwd()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;" id="pwdToggle">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary submit-btn" id="submitBtn">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      Don't have an account? <a href="/signup">Create one →</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function togglePwd() {
+    const inp = document.getElementById('pwdInput');
+    const icon = document.querySelector('#pwdToggle i');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      icon.className = 'fa-regular fa-eye-slash';
+    } else {
+      inp.type = 'password';
+      icon.className = 'fa-regular fa-eye';
+    }
+  }
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<span class="spinner"></span> Signing in...';
+    btn.disabled = true;
+  });
+</script>
+{% endblock %}

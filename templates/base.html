@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}CareerLens AI{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #060910;
+      --bg2: #0d1117;
+      --bg3: #111827;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.08);
+      --accent: #7c6bff;
+      --accent2: #4fd1c5;
+      --accent3: #f472b6;
+      --text: #f0f4ff;
+      --muted: #8892a4;
+      --success: #34d399;
+      --warn: #fbbf24;
+      --danger: #f87171;
+      --card-radius: 18px;
+      --radius: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 900px 600px at 10% 20%, rgba(124,107,255,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 700px 500px at 90% 80%, rgba(79,209,197,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 60% 10%, rgba(244,114,182,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 64px;
+      background: rgba(6,9,16,0.82);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.3rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 0.5rem; }
+    .nav-link {
+      color: var(--muted); font-size: 0.9rem; text-decoration: none;
+      padding: 0.45rem 1rem; border-radius: var(--radius);
+      transition: all 0.2s;
+    }
+    .nav-link:hover { color: var(--text); background: var(--glass); }
+    .nav-link.active { color: var(--text); background: var(--glass); }
+    .nav-badge {
+      font-size: 0.8rem; padding: 0.3rem 0.9rem;
+      background: rgba(124,107,255,0.15);
+      border: 1px solid rgba(124,107,255,0.35);
+      border-radius: 50px; color: var(--accent);
+      text-decoration: none; transition: all 0.2s;
+    }
+    .nav-badge:hover { background: rgba(124,107,255,0.25); }
+    .page { position: relative; z-index: 1; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; }
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--card-radius);
+      padding: 1.75rem;
+      transition: border-color 0.3s;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.14); }
+    .card-accent {
+      background: linear-gradient(135deg, rgba(124,107,255,0.08), rgba(79,209,197,0.04));
+      border-color: rgba(124,107,255,0.2);
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.65rem 1.5rem; border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
+      cursor: pointer; text-decoration: none; border: none;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+      box-shadow: 0 0 20px rgba(124,107,255,0.3);
+    }
+    .btn-primary:hover {
+      background: #6c5bef;
+      box-shadow: 0 0 32px rgba(124,107,255,0.5);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--glass); color: var(--text);
+      border: 1px solid var(--glass-border);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.08); }
+    .btn-ghost { background: transparent; color: var(--muted); }
+    .btn-ghost:hover { color: var(--text); }
+    .btn-sm { padding: 0.4rem 1rem; font-size: 0.8rem; }
+    .btn-lg { padding: 0.85rem 2.2rem; font-size: 1rem; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label {
+      display: block; margin-bottom: 0.5rem;
+      font-size: 0.82rem; font-weight: 500; color: var(--muted);
+      letter-spacing: 0.02em; text-transform: uppercase;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      transition: all 0.2s; outline: none;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(136,146,164,0.5); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent);
+      background: rgba(124,107,255,0.06);
+      box-shadow: 0 0 0 3px rgba(124,107,255,0.12);
+    }
+    .form-textarea { resize: vertical; min-height: 130px; line-height: 1.7; }
+    .form-select option { background: #0d1117; color: var(--text); }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.25rem 0.7rem; border-radius: 50px; font-size: 0.75rem; font-weight: 500;
+    }
+    .badge-purple { background: rgba(124,107,255,0.15); color: var(--accent); border: 1px solid rgba(124,107,255,0.25); }
+    .badge-teal   { background: rgba(79,209,197,0.15);  color: var(--accent2); border: 1px solid rgba(79,209,197,0.25); }
+    .badge-pink   { background: rgba(244,114,182,0.15); color: var(--accent3); border: 1px solid rgba(244,114,182,0.25); }
+    .badge-green  { background: rgba(52,211,153,0.15);  color: var(--success); border: 1px solid rgba(52,211,153,0.25); }
+    .badge-red    { background: rgba(248,113,113,0.15); color: var(--danger);  border: 1px solid rgba(248,113,113,0.25); }
+    .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.4rem; margin-bottom: 0.3rem; }
+    .section-subtitle { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.5rem; }
+    .divider { height: 1px; background: var(--glass-border); margin: 1.5rem 0; }
+    .flash { padding: 0.85rem 1.2rem; border-radius: var(--radius); margin-bottom: 1rem; font-size: 0.88rem; }
+    .flash-error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--danger); }
+    .flash-success { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: var(--success); }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-1 { gap: 0.5rem; } .gap-2 { gap: 1rem; } .gap-3 { gap: 1.5rem; }
+    .mt-1 { margin-top: 0.5rem; } .mt-2 { margin-top: 1rem; } .mt-3 { margin-top: 1.5rem; }
+    .mb-1 { margin-bottom: 0.5rem; } .mb-2 { margin-bottom: 1rem; }
+    .text-muted { color: var(--muted); }
+    .text-sm { font-size: 0.85rem; }
+    .text-xs { font-size: 0.75rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up   { animation: fadeUp 0.5s ease forwards; }
+    .fade-up-2 { animation: fadeUp 0.5s 0.1s ease forwards; opacity: 0; }
+    .fade-up-3 { animation: fadeUp 0.5s 0.2s ease forwards; opacity: 0; }
+    .fade-up-4 { animation: fadeUp 0.5s 0.3s ease forwards; opacity: 0; }
+    .score-ring-wrap { position: relative; width: 120px; height: 120px; flex-shrink: 0; }
+    .score-ring-wrap svg { transform: rotate(-90deg); }
+    .score-ring-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .score-ring-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.8rem; line-height: 1; }
+    .score-ring-label { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.08em; margin-top: 2px; text-transform: uppercase; }
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      nav { padding: 0 1rem; }
+      .container { padding: 1.5rem 1rem; }
+      .nav-link span { display: none; }
+    }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+<div class="page">
+  <nav>
+    <a href="/dashboard" class="nav-logo">⬡ CareerLens</a>
+    <div class="nav-links">
+      {% if session.get('user') %}
+        <a href="/dashboard" class="nav-link {% if request.path == '/dashboard' %}active{% endif %}">
+          <i class="fa-solid fa-gauge-high"></i> <span>Analyze</span>
+        </a>
+        <a href="/history" class="nav-link {% if request.path == '/history' %}active{% endif %}">
+          <i class="fa-solid fa-clock-rotate-left"></i> <span>History</span>
+        </a>
+        <span class="nav-link text-muted text-sm" style="cursor:default">
+          <i class="fa-regular fa-circle-user"></i> {{ session['user'].split('@')[0] }}
+        </span>
+        <a href="/logout" class="btn btn-sm btn-secondary">Logout</a>
+      {% else %}
+        <a href="/login" class="nav-link">Login</a>
+        <a href="/signup" class="nav-badge">Get Started →</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  {% block content %}{% endblock %}
+</div>
+
+<script>
+  function renderScoreRing(el, score) {
+    const r = 52, c = 2 * Math.PI * r;
+    const pct = Math.min(Math.max(score, 0), 100) / 100;
+    const color = score >= 75 ? '#34d399' : score >= 50 ? '#fbbf24' : '#f87171';
+    const numEl = el.querySelector('.score-ring-num');
+    if (numEl) { numEl.textContent = score; numEl.style.color = color; }
+    const circle = el.querySelector('.score-fill');
+    if (circle) {
+      circle.style.stroke = color;
+      circle.style.strokeDasharray = `${c * pct} ${c * (1 - pct)}`;
+    }
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.score-ring-wrap[data-score]').forEach(el => {
+      const score = parseInt(el.dataset.score);
+      const circle = el.querySelector('.score-fill');
+      const r = 52, c = 2 * Math.PI * r;
+      if (circle) circle.style.strokeDasharray = `0 ${c}`;
+      setTimeout(() => renderScoreRing(el, score), 250);
+    });
+  });
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

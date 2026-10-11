@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — CareerLens AI{% endblock %}
+
+{% block head %}
+<style>
+  .auth-wrap {
+    min-height: calc(100vh - 64px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem 1rem;
+  }
+  .auth-card {
+    width: 100%; max-width: 420px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2.5rem;
+  }
+  .auth-logo { text-align: center; margin-bottom: 2rem; }
+  .auth-logo h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.3rem;
+  }
+  .auth-logo p { color: var(--muted); font-size: 0.9rem; }
+  .auth-footer { text-align: center; margin-top: 1.5rem; color: var(--muted); font-size: 0.88rem; }
+  .auth-footer a { color: var(--accent); text-decoration: none; }
+  .auth-footer a:hover { text-decoration: underline; }
+  .submit-btn {
+    width: 100%; justify-content: center; padding: 0.8rem;
+    font-size: 0.95rem; font-weight: 600; margin-top: 0.5rem;
+  }
+  .perks {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;
+    margin-bottom: 1.75rem;
+  }
+  .perk {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px; padding: 0.6rem 0.8rem;
+    font-size: 0.78rem; color: var(--muted);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .perk i { color: var(--accent2); font-size: 0.85rem; }
+  .strength-bar {
+    height: 3px; border-radius: 3px; margin-top: 6px;
+    background: var(--glass-border); overflow: hidden;
+  }
+  .strength-fill { height: 100%; width: 0; border-radius: 3px; transition: width 0.3s, background 0.3s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card fade-up">
+    <div class="auth-logo">
+      <h1>⬡ CareerLens</h1>
+      <p>Start your AI career journey</p>
+    </div>
+
+    <div class="perks">
+      <div class="perk"><i class="fa-solid fa-bolt"></i> Instant Analysis</div>
+      <div class="perk"><i class="fa-solid fa-chart-line"></i> Score Tracking</div>
+      <div class="perk"><i class="fa-solid fa-road"></i> Career Roadmap</div>
+      <div class="perk"><i class="fa-solid fa-comments"></i> Mock Interview</div>
+    </div>
+
+    {% if error %}
+      <div class="flash flash-error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/signup" id="signupForm">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-input" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div style="position:relative">
+          <input type="password" name="password" id="pwdInput" class="form-input" placeholder="Min. 8 characters" required autocomplete="new-password" oninput="checkStrength(this.value)" />
+          <button type="button" onclick="togglePwd()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;">
+            <i class="fa-regular fa-eye" id="pwdIcon"></i>
+          </button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <p class="text-xs text-muted mt-1" id="strengthLabel" style="min-height:16px"></p>
+      </div>
+      <button type="submit" class="btn btn-primary submit-btn" id="submitBtn">
+        <i class="fa-solid fa-user-plus"></i> Create Account
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a href="/login">Sign in →</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function togglePwd() {
+    const inp = document.getElementById('pwdInput');
+    const icon = document.getElementById('pwdIcon');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    icon.className = inp.type === 'text' ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+  }
+  function checkStrength(val) {
+    const fill = document.getElementById('strengthFill');
+    const label = document.getElementById('strengthLabel');
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const levels = [
+      { pct: '0%', color: 'transparent', text: '' },
+      { pct: '25%', color: '#f87171', text: 'Weak' },
+      { pct: '50%', color: '#fbbf24', text: 'Fair' },
+      { pct: '75%', color: '#60a5fa', text: 'Good' },
+      { pct: '100%', color: '#34d399', text: 'Strong' },
+    ];
+    const l = levels[score];
+    fill.style.width = l.pct; fill.style.background = l.color;
+    label.textContent = l.text; label.style.color = l.color;
+  }
+  document.getElementById('signupForm').addEventListener('submit', function() {
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<span class="spinner"></span> Creating...';
+    btn.disabled = true;
+  });
+</script>
+{% endblock %}
